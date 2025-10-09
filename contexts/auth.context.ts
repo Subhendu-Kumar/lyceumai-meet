@@ -11,6 +11,7 @@ export interface AuthState {
   user: User | null;
   token: string | null;
   error: string | null;
+  meetId: string | null;
   isAuthenticated: boolean;
 }
 

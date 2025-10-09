@@ -2,6 +2,8 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import AuthProvider from "@/providers/auth.provider";
+import "@stream-io/video-react-sdk/dist/css/styles.css";
+import StreamProvider from "@/providers/stream.provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <StreamProvider>{children}</StreamProvider>
+        </AuthProvider>
       </body>
     </html>
   );
