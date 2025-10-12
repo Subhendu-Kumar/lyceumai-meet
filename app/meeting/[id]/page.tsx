@@ -1,13 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
+
 import Loader from "@/components/Loader";
 import MeetingRoom from "@/components/MeetingRoom";
 import MeetingSetup from "@/components/MeetingSetup";
+
 import { useGetCallById } from "@/hooks/useGetCallById";
+
 import { StreamCall, StreamTheme } from "@stream-io/video-react-sdk";
 
-const MeetingInterface = ({ params: { id } }: { params: { id: string } }) => {
+const MeetingInterface = ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = use(params);
   const { call, isCallLoading } = useGetCallById(id);
   const [isSetupComplete, setIsSetupComplete] = useState(false);
 

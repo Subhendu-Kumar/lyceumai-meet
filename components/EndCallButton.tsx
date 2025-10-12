@@ -7,8 +7,8 @@ import { useCall, useCallStateHooks } from "@stream-io/video-react-sdk";
 const EndCallButton = () => {
   const call = useCall();
   const router = useRouter();
-  const { useLocalParticipant } = useCallStateHooks();
-  const localParticipant = useLocalParticipant();
+  const localParticipant = useCallStateHooks().useLocalParticipant();
+
   const isMeetingOwner =
     localParticipant &&
     call?.state.createdBy &&

@@ -38,9 +38,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
       return;
     }
-
-    let cancelled = false;
-
     const authenticateUser = async () => {
       try {
         const verifyRes = await API.get("/auth/verify", {
@@ -51,29 +48,20 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           const userRes = await API.get("/auth/user", {
             headers: { Authorization: `Bearer ${token}` },
           });
-          if (!cancelled) {
-            setUser(userRes.data);
-            setIsAuthenticated(true);
-          }
+          setUser(userRes.data);
+          setIsAuthenticated(true);
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
-        if (!cancelled) {
-          const message =
-            err.response?.data?.detail || err.message || "Something went wrong";
-          setError(message);
-          localStorage.removeItem("auth_token");
-        }
+        const message =
+          err.response?.data?.detail || err.message || "Something went wrong";
+        setError(message);
+        localStorage.removeItem("auth_token");
       } finally {
-        if (!cancelled) setLoading(false);
+        setLoading(false);
       }
     };
-
     authenticateUser();
-
-    return () => {
-      cancelled = true;
-    };
   }, [token]);
 
   return (
