@@ -1,5 +1,6 @@
 "use client";
 
+import Loader from "@/components/Loader";
 import { useAuth } from "@/hooks/useAuth";
 import { ReactNode, useEffect, useState } from "react";
 import { tokenProvider } from "@/actions/stream.action";
@@ -29,6 +30,10 @@ const StreamProvider = ({ children }: { children: ReactNode }) => {
 
     setVideoClient(client);
   }, [user, loading]);
+
+  if (!videoClient) {
+    return <Loader />;
+  }
 
   return <StreamVideo client={videoClient!}>{children}</StreamVideo>;
 };
