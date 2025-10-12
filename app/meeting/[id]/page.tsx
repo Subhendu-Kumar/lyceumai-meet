@@ -16,7 +16,7 @@ const MeetingInterface = ({ params: { id } }: { params: { id: string } }) => {
   }
 
   return (
-    <main className="h-screen w-full ">
+    <main className="h-screen w-full">
       <StreamCall call={call}>
         <StreamTheme>
           {!isSetupComplete ? (

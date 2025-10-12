@@ -10,24 +10,23 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [meetId, setMeetId] = useState<string | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const urlMeetId = params.get("meet_id");
     const urlToken = params.get("auth_token");
-    if (urlMeetId) {
-      setMeetId(urlMeetId);
-    }
+
+    if (urlMeetId) setMeetId(urlMeetId);
+
     if (urlToken) {
       localStorage.setItem("auth_token", urlToken);
       setToken(urlToken);
     } else {
       const storedToken = localStorage.getItem("auth_token");
-      if (storedToken) {
-        setToken(storedToken);
-      }
+      if (storedToken) setToken(storedToken);
     }
+
     const url = new URL(window.location.href);
     url.searchParams.delete("meet_id");
     url.searchParams.delete("auth_token");
@@ -36,38 +35,45 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (!token) {
+      setLoading(false);
       return;
     }
 
-    const authenticateUser = async (token: string) => {
+    let cancelled = false;
+
+    const authenticateUser = async () => {
       try {
-        const verifyTokenRes = await API.get("/auth/verify", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const verifyRes = await API.get("/auth/verify", {
+          headers: { Authorization: `Bearer ${token}` },
         });
-        if (verifyTokenRes.data) {
-          const res = await API.get(`/auth/user`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+
+        if (verifyRes.data) {
+          const userRes = await API.get("/auth/user", {
+            headers: { Authorization: `Bearer ${token}` },
           });
-          setUser(res.data);
-          setIsAuthenticated(true);
-          setToken(res.data.token);
+          if (!cancelled) {
+            setUser(userRes.data);
+            setIsAuthenticated(true);
+          }
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        const message =
-          error.response?.data?.detail ||
-          error.message ||
-          "Something went wrong";
-        setError(message);
+      } catch (err: any) {
+        if (!cancelled) {
+          const message =
+            err.response?.data?.detail || err.message || "Something went wrong";
+          setError(message);
+          localStorage.removeItem("auth_token");
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
-    authenticateUser(token!);
+
+    authenticateUser();
+
+    return () => {
+      cancelled = true;
+    };
   }, [token]);
 
   return (

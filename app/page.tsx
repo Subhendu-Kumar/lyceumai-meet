@@ -9,7 +9,6 @@ const Home = () => {
   const router = useRouter();
   const { user, loading, isAuthenticated, error, meetId } = useAuth();
 
-  // Redirect if authenticated and meetId exists
   useEffect(() => {
     if (isAuthenticated && user && meetId) {
       router.replace(`/meeting/${meetId}`);
@@ -36,19 +35,18 @@ const Home = () => {
     );
   }
 
-  // Authenticated but no meetId in URL
   if (isAuthenticated && user && !meetId) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
-        <h1 className="text-lg font-semibold mb-4">Welcome, {user?.name}</h1>
-        <p className="text-gray-500 mb-4">
+        <h1 className="text-lg font-semibold mb-4">Welcome, {user.name}</h1>
+        <p className="text-gray-400 mb-4">
           ❗ Meet ID not provided in the URL.
         </p>
       </div>
     );
   }
 
-  return null; // While redirecting
+  return null;
 };
 
 export default Home;
