@@ -1,6 +1,6 @@
 "use client";
 
-import API from "@/api/axios.instance";
+import API from "@/lib/axios.instance";
 import { ReactNode, useEffect, useState } from "react";
 import { AuthContext, User } from "@/contexts/auth.context";
 
