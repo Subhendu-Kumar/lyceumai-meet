@@ -19,7 +19,14 @@ const EndCallButton = ({ params }: { params: Promise<{ id: string }> }) => {
 
   const handleEndCall = async () => {
     try {
-      const res = await API.patch(`/meeting/${id}/status?status=COMPLETED`);
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        alert("Authentication token not found. Please log in again.");
+        return;
+      }
+      const res = await API.patch(`/meeting/${id}/status?status=COMPLETED`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (res.status === 200) {
         await call!.endCall();
         setTimeout(() => {
