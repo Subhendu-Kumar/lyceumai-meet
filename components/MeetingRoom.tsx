@@ -25,7 +25,7 @@ import EndCallButton from "./EndCallButton";
 
 type callLayOutType = "grid" | "speaker-left" | "speaker-right";
 
-const MeetingRoom = () => {
+const MeetingRoom = ({ params }: { params: Promise<{ id: string }> }) => {
   const searchParams = useSearchParams();
   const isPersonalRoom = !!searchParams.get("personal");
 
@@ -108,7 +108,7 @@ const MeetingRoom = () => {
           </div>
         </button>
 
-        {!isPersonalRoom && <EndCallButton />}
+        {!isPersonalRoom && <EndCallButton params={params} />}
 
         <button
           onClick={() => {

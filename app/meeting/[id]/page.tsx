@@ -26,7 +26,7 @@ const MeetingInterface = ({ params }: { params: Promise<{ id: string }> }) => {
           {!isSetupComplete ? (
             <MeetingSetup setIsSetupComplete={setIsSetupComplete} />
           ) : (
-            <MeetingRoom />
+            <MeetingRoom params={params} />
           )}
         </StreamTheme>
       </StreamCall>
