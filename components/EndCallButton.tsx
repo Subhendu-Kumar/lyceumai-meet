@@ -1,13 +1,13 @@
 "use client";
 
-import { use } from "react";
 import { Button } from "./ui/button";
 import API from "@/lib/axios.instance";
 import { useRouter } from "next/navigation";
 import { useCall, useCallStateHooks } from "@stream-io/video-react-sdk";
+import { useAuth } from "@/hooks/useAuth";
 
-const EndCallButton = ({ params }: { params: Promise<{ id: string }> }) => {
-  const { id } = use(params);
+const EndCallButton = () => {
+  const { token, meetId, setMeetId } = useAuth();
   const call = useCall();
   const router = useRouter();
   const localParticipant = useCallStateHooks().useLocalParticipant();
@@ -19,16 +19,20 @@ const EndCallButton = ({ params }: { params: Promise<{ id: string }> }) => {
 
   const handleEndCall = async () => {
     try {
-      const token = localStorage.getItem("auth_token");
       if (!token) {
         alert("Authentication token not found. Please log in again.");
         return;
       }
-      const res = await API.patch(`/meeting/${id}/status?status=COMPLETED`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await API.patch(
+        `/meeting/${meetId}/status?status=COMPLETED`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (res.status === 200) {
         await call!.endCall();
+        setMeetId(null);
         setTimeout(() => {
           router.replace("/");
         }, 500);

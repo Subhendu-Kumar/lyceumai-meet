@@ -66,7 +66,15 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ loading, user, token, error, isAuthenticated, meetId }}
+      value={{
+        loading,
+        user,
+        token,
+        error,
+        isAuthenticated,
+        meetId,
+        setMeetId,
+      }}
     >
       {children}
     </AuthContext.Provider>

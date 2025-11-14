@@ -12,6 +12,7 @@ export interface AuthState {
   token: string | null;
   error: string | null;
   meetId: string | null;
+  setMeetId: (id: string | null) => void;
   isAuthenticated: boolean;
 }
 
